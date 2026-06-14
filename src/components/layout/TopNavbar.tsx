@@ -51,9 +51,10 @@ export function TopNavbar() {
   };
 
   return (
-    <header className="h-16 border-b border-border bg-card/50 backdrop-blur-xl flex items-center justify-between px-4 lg:px-8 sticky top-0 z-50">
+    <header className="h-16 border-b border-border bg-[#0A0A0A] flex items-center justify-between px-6 lg:px-10 sticky top-0 z-50">
       <div className="flex items-center gap-4 lg:hidden">
-        <h1 className="text-lg font-bold bg-gradient-to-br from-indigo-400 to-purple-600 bg-clip-text text-transparent">
+        <h1 className="text-sm font-bold tracking-tight flex items-center gap-2">
+          <div className="w-4 h-4 rounded-sm bg-gradient-to-br from-primary to-[#FF9A3C]" />
           SD Tracker
         </h1>
       </div>

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, ListVideo, BarChart2, CheckCircle2 } from 'lucide-react';
+import { LayoutDashboard, ListVideo, BarChart2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useTrackerStore } from '@/store/useTrackerStore';
 import { useHydration } from '@/hooks/useHydration';
@@ -24,15 +24,15 @@ export function Sidebar() {
   const hldCompleted = hldProgress.filter((v) => v.completed).length;
 
   return (
-    <aside className="hidden lg:flex w-64 flex-col border-r border-border bg-card/50 backdrop-blur-xl">
-      <div className="p-6">
-        <h1 className="text-xl font-bold bg-gradient-to-br from-indigo-400 to-purple-600 bg-clip-text text-transparent flex items-center gap-2">
-          <CheckCircle2 className="w-6 h-6 text-indigo-500" />
-          SD Tracker
+    <aside className="hidden lg:flex w-[280px] flex-col border-r border-border bg-[#0A0A0A]">
+      <div className="p-6 pb-8">
+        <h1 className="text-sm font-bold tracking-tight text-foreground flex items-center gap-2">
+          <div className="w-4 h-4 rounded-sm bg-gradient-to-br from-primary to-[#FF9A3C]" />
+          System Design Tracker
         </h1>
       </div>
 
-      <nav className="flex-1 px-4 space-y-2">
+      <nav className="flex-1 px-3 space-y-1">
         {navItems.map((item) => {
           const isActive = pathname === item.href;
           return (
@@ -40,43 +40,46 @@ export function Sidebar() {
               key={item.name}
               href={item.href}
               className={cn(
-                'flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200',
+                'flex items-center gap-3 px-3 py-2 text-sm transition-all duration-150 relative group',
                 isActive
-                  ? 'bg-primary text-primary-foreground shadow-md shadow-primary/20'
-                  : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                  ? 'text-foreground font-medium'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-[#111111] rounded-md'
               )}
             >
-              <item.icon className="w-5 h-5" />
-              <span className="font-medium">{item.name}</span>
+              {isActive && (
+                <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-primary rounded-r-full" />
+              )}
+              <item.icon className="w-4 h-4" />
+              <span>{item.name}</span>
             </Link>
           );
         })}
       </nav>
 
       {hydrated && (
-        <div className="p-4 m-4 rounded-xl bg-muted/50 border border-border">
-          <h3 className="text-sm font-semibold mb-3">Quick Stats</h3>
-          <div className="space-y-3">
+        <div className="p-6">
+          <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-4">Quick Stats</h3>
+          <div className="space-y-4">
             <div>
-              <div className="flex justify-between text-xs mb-1">
+              <div className="flex justify-between text-xs mb-2">
                 <span className="text-muted-foreground">LLD</span>
-                <span className="font-medium">{lldCompleted}/{lldProgress.length}</span>
+                <span className="font-medium text-foreground">{lldCompleted}/{lldProgress.length}</span>
               </div>
-              <div className="h-1.5 w-full bg-secondary rounded-full overflow-hidden">
+              <div className="h-1 w-full bg-[#1F1F1F] rounded-full overflow-hidden">
                 <div 
-                  className="h-full bg-indigo-500 rounded-full" 
+                  className="h-full bg-gradient-to-r from-primary to-[#FF9A3C] rounded-full" 
                   style={{ width: `${(lldCompleted / lldProgress.length) * 100}%` }}
                 />
               </div>
             </div>
             <div>
-              <div className="flex justify-between text-xs mb-1">
+              <div className="flex justify-between text-xs mb-2">
                 <span className="text-muted-foreground">HLD</span>
-                <span className="font-medium">{hldCompleted}/{hldProgress.length}</span>
+                <span className="font-medium text-foreground">{hldCompleted}/{hldProgress.length}</span>
               </div>
-              <div className="h-1.5 w-full bg-secondary rounded-full overflow-hidden">
+              <div className="h-1 w-full bg-[#1F1F1F] rounded-full overflow-hidden">
                 <div 
-                  className="h-full bg-purple-500 rounded-full" 
+                  className="h-full bg-gradient-to-r from-primary to-[#FF9A3C] rounded-full" 
                   style={{ width: `${(hldCompleted / hldProgress.length) * 100}%` }}
                 />
               </div>

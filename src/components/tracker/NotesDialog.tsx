@@ -44,28 +44,30 @@ export function NotesDialog({ videoId, videoTitle, isOpen, onClose }: NotesDialo
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px]">
-        <DialogHeader>
-          <DialogTitle>Notes for {videoTitle}</DialogTitle>
+      <DialogContent className="sm:max-w-[500px] bg-[#171717] border-[#262626] p-0 overflow-hidden shadow-2xl">
+        <DialogHeader className="px-6 py-4 border-b border-[#262626]">
+          <DialogTitle className="text-foreground text-base">Notes for {videoTitle}</DialogTitle>
         </DialogHeader>
-        <div className="py-4">
+        <div className="p-6">
           <Textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
             placeholder="Type your notes here..."
-            className="min-h-[200px] resize-none"
+            className="min-h-[200px] resize-none bg-[#0A0A0A] border-[#262626] focus-visible:ring-primary"
           />
           {note?.timestamp && (
-            <p className="text-xs text-muted-foreground mt-2">
+            <p className="text-xs text-muted-foreground mt-3">
               Last edited: {format(note.timestamp, 'PPp')}
             </p>
           )}
         </div>
-        <DialogFooter>
-          <Button variant="outline" onClick={onClose}>
+        <DialogFooter className="px-6 py-4 border-t border-[#262626] bg-[#111111] m-0">
+          <Button variant="outline" onClick={onClose} className="bg-transparent border-[#404040] hover:bg-[#262626] hover:text-foreground">
             Cancel
           </Button>
-          <Button onClick={handleSave}>Save changes</Button>
+          <Button onClick={handleSave} className="bg-primary text-primary-foreground hover:bg-primary/90">
+            Save changes
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

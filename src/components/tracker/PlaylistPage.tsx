@@ -30,22 +30,9 @@ export function PlaylistPage({ title, playlistType, youtubeLink }: PlaylistPageP
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState<'all' | 'completed' | 'pending'>('all');
   const [sort, setSort] = useState<'asc' | 'desc'>('asc');
-  const [showConfetti, setShowConfetti] = useState(false);
 
   const completedCount = videos.filter(v => v.completed).length;
   const percentage = videos.length > 0 ? Math.round((completedCount / videos.length) * 100) : 0;
-
-  useEffect(() => {
-    // Check if exactly hit 25%, 50%, 75%, 100% boundary (or newly hit)
-    // For simplicity, just show confetti if it reaches 100% just now
-    // A robust way would require tracking previous state, but we'll keep it simple:
-    if (percentage === 100 && hydrated && videos.length > 0) {
-       // Ideally we check if they JUST reached it, but we can just show it once.
-       // Let's just show it if they click a video and it reaches 100%.
-       // The store update will trigger re-render.
-       // If completedCount === videos.length
-    }
-  }, [percentage, hydrated, videos.length]);
 
   const filteredVideos = useMemo(() => {
     return videos
@@ -69,26 +56,26 @@ export function PlaylistPage({ title, playlistType, youtubeLink }: PlaylistPageP
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 animate-in fade-in duration-500">
-      <div className="bg-card/40 backdrop-blur-md border border-border p-6 rounded-2xl">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+    <div className="max-w-[1000px] mx-auto space-y-8 animate-in fade-in duration-300">
+      <div className="bg-[#171717] border border-[#262626] p-6 rounded-[12px]">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
-            <p className="text-muted-foreground mt-1">
+            <h1 className="text-2xl font-bold tracking-tight text-foreground">{title}</h1>
+            <p className="text-muted-foreground mt-1 text-sm">
               {completedCount} of {videos.length} completed
             </p>
           </div>
-          <Button onClick={() => window.open(youtubeLink, '_blank')} className="shrink-0 bg-indigo-600 hover:bg-indigo-700 text-white border-0">
+          <Button onClick={() => window.open(youtubeLink, '_blank')} className="shrink-0 bg-[#262626] hover:bg-[#333333] text-foreground border border-[#404040]">
             Open Playlist <ExternalLink className="w-4 h-4 ml-2" />
           </Button>
         </div>
 
-        <div className="space-y-2">
+        <div className="space-y-3">
           <div className="flex justify-between text-sm font-medium">
-            <span>Progress</span>
-            <span className="text-indigo-400">{percentage}%</span>
+            <span className="text-muted-foreground">Progress</span>
+            <span className="text-primary">{percentage}%</span>
           </div>
-          <Progress value={percentage} className="h-3" indicatorClassName="bg-indigo-500" />
+          <Progress value={percentage} className="h-2 bg-[#1F1F1F]" indicatorClassName="bg-gradient-to-r from-primary to-[#FF9A3C]" />
         </div>
       </div>
 
@@ -99,16 +86,16 @@ export function PlaylistPage({ title, playlistType, youtubeLink }: PlaylistPageP
             placeholder="Search by video number or title..." 
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-9 bg-card/40"
+            className="pl-9 bg-[#171717] border-[#262626] focus-visible:ring-primary h-10"
           />
         </div>
         <div className="flex gap-2">
           <DropdownMenu>
-            <DropdownMenuTrigger className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-card/40 shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2">
+            <DropdownMenuTrigger className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary disabled:pointer-events-none disabled:opacity-50 border border-[#262626] bg-[#171717] hover:bg-[#262626] hover:text-foreground h-10 px-4 py-2">
               <Filter className="w-4 h-4 mr-2" />
               {filter === 'all' ? 'All' : filter === 'completed' ? 'Completed' : 'Pending'}
             </DropdownMenuTrigger>
-            <DropdownMenuContent>
+            <DropdownMenuContent className="bg-[#171717] border-[#262626]">
               <DropdownMenuItem onClick={() => setFilter('all')}>All Videos</DropdownMenuItem>
               <DropdownMenuItem onClick={() => setFilter('completed')}>Completed</DropdownMenuItem>
               <DropdownMenuItem onClick={() => setFilter('pending')}>Pending</DropdownMenuItem>
@@ -116,11 +103,11 @@ export function PlaylistPage({ title, playlistType, youtubeLink }: PlaylistPageP
           </DropdownMenu>
 
           <DropdownMenu>
-            <DropdownMenuTrigger className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-card/40 shadow-sm hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2">
+            <DropdownMenuTrigger className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary disabled:pointer-events-none disabled:opacity-50 border border-[#262626] bg-[#171717] hover:bg-[#262626] hover:text-foreground h-10 px-4 py-2">
               <ArrowDownUp className="w-4 h-4 mr-2" />
               Sort
             </DropdownMenuTrigger>
-            <DropdownMenuContent>
+            <DropdownMenuContent className="bg-[#171717] border-[#262626]">
               <DropdownMenuItem onClick={() => setSort('asc')}>Ascending</DropdownMenuItem>
               <DropdownMenuItem onClick={() => setSort('desc')}>Descending</DropdownMenuItem>
             </DropdownMenuContent>
@@ -128,13 +115,13 @@ export function PlaylistPage({ title, playlistType, youtubeLink }: PlaylistPageP
         </div>
       </div>
 
-      <div className="space-y-3">
+      <div className="border border-[#262626] rounded-[8px] bg-[#171717] flex flex-col overflow-hidden">
         {filteredVideos.length > 0 ? (
           filteredVideos.map((video) => (
             <VideoCard key={video.id} video={video} playlist={playlistType} />
           ))
         ) : (
-          <div className="text-center py-12 text-muted-foreground">
+          <div className="text-center py-12 text-muted-foreground text-sm">
             No videos found matching your filters.
           </div>
         )}

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Check, Edit3, CheckCircle2 } from 'lucide-react';
+import { Check, MessageSquare, CheckCircle2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useTrackerStore, VideoItem } from '@/store/useTrackerStore';
@@ -23,61 +23,61 @@ export function VideoCard({ video, playlist }: VideoCardProps) {
     <>
       <motion.div
         layout
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 5 }}
         animate={{ opacity: 1, y: 0 }}
-        className={cn(
-          "group relative flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl border transition-all duration-300",
-          video.completed 
-            ? "bg-primary/5 border-primary/20" 
-            : "bg-card/40 border-border/50 hover:bg-card/80 hover:border-border"
-        )}
+        transition={{ duration: 0.2 }}
+        className="group flex items-center justify-between py-3 px-4 border-b border-[#262626] last:border-0 hover:bg-[#111111] transition-colors"
       >
-        <div className="flex items-start sm:items-center gap-4 mb-4 sm:mb-0">
+        <div className="flex items-center gap-4 flex-1 min-w-0">
           <button
             onClick={() => toggleVideo(playlist, video.id)}
             className={cn(
-              "flex-shrink-0 w-6 h-6 rounded-md border flex items-center justify-center transition-colors",
+              "flex-shrink-0 w-4 h-4 rounded-[4px] border flex items-center justify-center transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50",
               video.completed 
-                ? "bg-primary border-primary text-primary-foreground" 
-                : "border-muted-foreground/30 text-transparent hover:border-primary"
+                ? "bg-primary border-primary text-white" 
+                : "border-[#404040] text-transparent hover:border-primary"
             )}
           >
-            <Check className="w-4 h-4" />
+            <Check className="w-3 h-3" strokeWidth={3} />
           </button>
           
-          <div>
+          <div className="flex items-center gap-3 min-w-0 truncate">
+            <span className="text-xs font-mono text-muted-foreground w-6">
+              {String(video.index).padStart(2, '0')}
+            </span>
             <h3 className={cn(
-              "font-medium transition-colors",
-              video.completed ? "text-muted-foreground line-through" : "text-foreground"
+              "text-sm font-medium truncate transition-colors",
+              video.completed ? "text-muted-foreground" : "text-foreground"
             )}>
-              {video.index}. {video.title}
+              {video.title}
             </h3>
-            <div className="flex flex-wrap items-center gap-3 mt-1">
-              {video.completed && video.completedAt && (
-                <span className="text-xs text-muted-foreground flex items-center gap-1">
-                  <CheckCircle2 className="w-3 h-3 text-primary" />
-                  {format(video.completedAt, 'MMM d, yyyy')}
-                </span>
-              )}
-              {note && (
-                <span className="text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground">
-                  Has Notes
-                </span>
-              )}
-            </div>
+            {video.completed && (
+              <span className="flex-shrink-0 inline-flex items-center gap-1 text-[10px] uppercase font-semibold text-primary bg-primary/10 px-1.5 py-0.5 rounded-sm">
+                Done
+              </span>
+            )}
           </div>
         </div>
 
-        <div className="flex items-center gap-2 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="text-xs gap-1.5 h-8"
+        <div className="flex items-center gap-4 flex-shrink-0 pl-4">
+          {video.completed && video.completedAt && (
+            <span className="text-xs text-muted-foreground hidden sm:block">
+              {format(video.completedAt, 'MMM d')}
+            </span>
+          )}
+          
+          <button 
             onClick={() => setIsNotesOpen(true)}
+            className={cn(
+              "flex items-center justify-center w-8 h-8 rounded-md transition-colors",
+              note 
+                ? "text-foreground bg-[#262626] hover:bg-[#333333]" 
+                : "text-muted-foreground hover:text-foreground hover:bg-[#262626] opacity-0 group-hover:opacity-100"
+            )}
+            title={note ? "View Notes" : "Add Notes"}
           >
-            <Edit3 className="w-3.5 h-3.5" />
-            {note ? 'Edit Notes' : 'Add Notes'}
-          </Button>
+            <MessageSquare className="w-4 h-4" />
+          </button>
         </div>
       </motion.div>
 

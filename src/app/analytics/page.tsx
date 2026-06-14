@@ -7,7 +7,7 @@ import { Target, Flame, Activity, CheckSquare } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer,
-  AreaChart, Area, PieChart, Pie, Cell
+  AreaChart, Area
 } from 'recharts';
 import { format, isToday } from 'date-fns';
 
@@ -27,14 +27,11 @@ export default function Analytics() {
   const totalCompleted = lldCompleted + hldCompleted;
   const totalVideos = lldVideos.length + hldVideos.length;
   const totalPercentage = totalVideos > 0 ? Math.round((totalCompleted / totalVideos) * 100) : 0;
-  const lldPercentage = Math.round((lldCompleted / lldVideos.length) * 100);
-  const hldPercentage = Math.round((hldCompleted / hldVideos.length) * 100);
 
   const completedToday = [...lldVideos, ...hldVideos].filter(v => 
     v.completed && v.completedAt && isToday(v.completedAt)
   ).length;
 
-  // Process data for Timeline (last 7 days activity)
   const activityMap = new Map<string, number>();
   [...lldVideos, ...hldVideos].forEach(v => {
     if (v.completed && v.completedAt) {
@@ -46,13 +43,7 @@ export default function Analytics() {
   const timelineData = Array.from(activityMap.entries())
     .map(([date, count]) => ({ date, completed: count }))
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-    .slice(-7); // Last 7 active days
-
-  const pieData = [
-    { name: 'LLD', value: lldCompleted, color: 'var(--indigo-500)' },
-    { name: 'HLD', value: hldCompleted, color: 'var(--purple-500)' },
-    { name: 'Remaining', value: totalVideos - totalCompleted, color: 'hsl(var(--muted))' }
-  ];
+    .slice(-7);
 
   const barData = [
     { name: 'LLD', completed: lldCompleted, remaining: lldVideos.length - lldCompleted },
@@ -60,63 +51,64 @@ export default function Analytics() {
   ];
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8 animate-in fade-in duration-500">
+    <div className="max-w-[1400px] mx-auto space-y-10 animate-in fade-in duration-300">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight mb-2">Analytics</h1>
-        <p className="text-muted-foreground">Deep dive into your study habits.</p>
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">Analytics</h1>
+        <p className="text-muted-foreground mt-1 text-sm">Deep dive into your study habits.</p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           title="Total Completion"
           value={`${totalPercentage}%`}
           subtitle={`${totalCompleted}/${totalVideos}`}
           icon={Target}
-          iconClassName="bg-primary/20 text-primary"
+          iconClassName="text-muted-foreground"
         />
         <StatCard
           title="Study Streak"
           value={store.streak.count}
           subtitle="Days"
           icon={Flame}
-          iconClassName="bg-orange-500/20 text-orange-500"
+          iconClassName="text-primary"
         />
         <StatCard
           title="Videos Today"
           value={completedToday}
           icon={Activity}
-          iconClassName="bg-emerald-500/20 text-emerald-500"
+          iconClassName="text-muted-foreground"
         />
         <StatCard
           title="Total Notes"
           value={Object.keys(store.notes).length}
           icon={CheckSquare}
-          iconClassName="bg-blue-500/20 text-blue-500"
+          iconClassName="text-muted-foreground"
         />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="bg-card/40 backdrop-blur-md">
-          <CardHeader>
-            <CardTitle className="text-lg">Completion Timeline (Last 7 Active Days)</CardTitle>
+        <Card className="bg-[#171717] border-[#262626] shadow-none rounded-[12px]">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-base font-semibold">Completion Timeline (Last 7 Active Days)</CardTitle>
           </CardHeader>
-          <CardContent className="h-[300px]">
+          <CardContent className="h-[320px]">
             {timelineData.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={timelineData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                   <defs>
                     <linearGradient id="colorCompleted" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="#FF7A00" stopOpacity={0.4}/>
+                      <stop offset="95%" stopColor="#FF7A00" stopOpacity={0}/>
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
-                  <XAxis dataKey="date" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
-                  <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#262626" vertical={false} />
+                  <XAxis dataKey="date" stroke="#A3A3A3" fontSize={12} tickLine={false} axisLine={false} />
+                  <YAxis stroke="#A3A3A3" fontSize={12} tickLine={false} axisLine={false} />
                   <RechartsTooltip 
-                    contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))' }}
+                    contentStyle={{ backgroundColor: '#171717', borderColor: '#262626', borderRadius: '8px', fontSize: '12px' }}
+                    itemStyle={{ color: '#FFFFFF' }}
                   />
-                  <Area type="monotone" dataKey="completed" stroke="hsl(var(--primary))" fillOpacity={1} fill="url(#colorCompleted)" />
+                  <Area type="monotone" dataKey="completed" stroke="#FF7A00" strokeWidth={2} fillOpacity={1} fill="url(#colorCompleted)" />
                 </AreaChart>
               </ResponsiveContainer>
             ) : (
@@ -127,23 +119,24 @@ export default function Analytics() {
           </CardContent>
         </Card>
 
-        <Card className="bg-card/40 backdrop-blur-md">
-          <CardHeader>
-            <CardTitle className="text-lg">Progress Breakdown</CardTitle>
+        <Card className="bg-[#171717] border-[#262626] shadow-none rounded-[12px]">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-base font-semibold">Progress Breakdown</CardTitle>
           </CardHeader>
-          <CardContent className="h-[300px]">
+          <CardContent className="h-[320px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={barData} margin={{ top: 20, right: 30, left: -20, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
-                <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
-                <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
+              <BarChart data={barData} margin={{ top: 20, right: 30, left: -20, bottom: 5 }} barSize={32}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#262626" vertical={false} />
+                <XAxis dataKey="name" stroke="#A3A3A3" fontSize={12} tickLine={false} axisLine={false} />
+                <YAxis stroke="#A3A3A3" fontSize={12} tickLine={false} axisLine={false} />
                 <RechartsTooltip 
-                  cursor={{fill: 'hsl(var(--muted))', opacity: 0.2}}
-                  contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))' }}
+                  cursor={{fill: '#262626', opacity: 0.2}}
+                  contentStyle={{ backgroundColor: '#171717', borderColor: '#262626', borderRadius: '8px', fontSize: '12px' }}
+                  itemStyle={{ color: '#FFFFFF' }}
                 />
-                <Legend />
-                <Bar dataKey="completed" stackId="a" fill="hsl(var(--primary))" radius={[0, 0, 4, 4]} />
-                <Bar dataKey="remaining" stackId="a" fill="hsl(var(--secondary))" radius={[4, 4, 0, 0]} />
+                <Legend verticalAlign="bottom" height={36} iconType="circle" wrapperStyle={{ fontSize: '12px' }} />
+                <Bar dataKey="completed" stackId="a" fill="#FF7A00" radius={[0, 0, 4, 4]} />
+                <Bar dataKey="remaining" stackId="a" fill="#262626" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>

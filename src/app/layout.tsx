@@ -1,19 +1,11 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { TopNavbar } from "@/components/layout/TopNavbar";
 import { MobileBottomNav } from "@/components/layout/MobileBottomNav";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
   title: "System Design Tracker",
@@ -28,15 +20,17 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} dark antialiased`}
+      className={`${inter.variable} dark antialiased`}
     >
-      <body className="min-h-screen bg-background text-foreground flex flex-col bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-background to-background">
+      <body className="min-h-screen bg-background text-foreground flex flex-col font-sans">
         <div className="flex h-screen overflow-hidden">
           <Sidebar />
-          <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+          <div className="flex-1 flex flex-col min-w-0 overflow-hidden bg-[#0A0A0A]">
             <TopNavbar />
-            <main className="flex-1 overflow-y-auto p-4 lg:p-8 pb-20 lg:pb-8">
-              {children}
+            <main className="flex-1 overflow-y-auto p-6 lg:p-10 pb-24 lg:pb-12">
+              <div className="max-w-[1400px] mx-auto">
+                {children}
+              </div>
             </main>
           </div>
         </div>
